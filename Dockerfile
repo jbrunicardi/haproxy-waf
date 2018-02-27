@@ -54,7 +54,6 @@ RUN set -x \
   && cp apache2/*.h $PWD/INSTALL/include \
   && cd /usr/src \
   && git clone http://git.haproxy.org/git/haproxy.git/ \
-  && patch -d /usr/src/haproxy -p 1 -i /fix_get0privatekey_compat.diff \
   && make -C /usr/src/haproxy \
 	TARGET=linux2628 \
 	USE_PCRE=1 \
