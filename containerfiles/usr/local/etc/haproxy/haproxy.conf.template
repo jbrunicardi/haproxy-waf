@@ -56,9 +56,18 @@ frontend public_tcp
   option tcplog
   log global
 
+  filter spoe engine modsecurity config spoe-modsecurity.conf
+  tcp-request content reject if { var(txn.modsec.code) -m int gt 0 }
+
   default_backend be_generic_tcp
 
-
+backend spoe-modsecurity
+      mode tcp
+      balance roundrobin
+      timeout connect 5s
+      timeout server  3m
+      server iprep1 127.0.0.1:12345
+	  
 backend be_generic_tcp
   mode tcp
   balance source

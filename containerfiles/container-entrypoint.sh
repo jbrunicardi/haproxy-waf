@@ -79,6 +79,8 @@ then
   CONFIG_FILE=/tmp/haproxy.conf
   # ${server_lines}
   sed -e "s/server_lines/${server_lines}/" /usr/local/etc/haproxy/haproxy.conf.template > ${CONFIG_FILE}
+  
+  cp /usr/local/etc/haproxy/spoe-modsecurity.conf /tmp/spoe-modsecurity.conf
 fi
 
 echo "using CONFIG_FILE   :"${CONFIG_FILE}
@@ -88,3 +90,5 @@ if [ x${DEBUG} != x ]; then
 else
   exec /usr/local/sbin/haproxy -f ${CONFIG_FILE} -db
 fi
+
+exec /usr/local/bin/modsecurity -f /data/owasp-modsecurity-crs-3.0.0/crs-setup.conf.example
