@@ -58,7 +58,7 @@ frontend public_tcp
   log global
 
   filter spoe engine modsecurity config /tmp/spoe-modsecurity.conf
-  tcp-request content reject if { var(txn.modsec.code) -m int gt 0 }
+  http-request content reject if { var(txn.modsec.code) -m int gt 0 }
 
   default_backend be_generic_tcp
 
