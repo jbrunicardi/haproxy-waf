@@ -40,7 +40,7 @@ listen stats
     stats hide-version
     stats realm Haproxy\ Statistics
     stats uri /
-    stats auth ${STATS_USER}:${STATS_PASSWORD}
+    #stats auth ${STATS_USER}:${STATS_PASSWORD}
 
 # public generic tcp forwarder
 # this works like a tcp forwarder as described here
@@ -49,6 +49,7 @@ listen stats
 
 frontend public_tcp
   bind :${SERVICE_TCP_PORT}
+  mode http
 
 # the format is described at
 # http://cbonte.github.io/haproxy-dconv/1.5/configuration.html#8.2.4
@@ -69,7 +70,7 @@ backend spoe-modsecurity
       server iprep1 127.0.0.1:12345
 	  
 backend be_generic_tcp
-  mode tcp
+  mode http
   balance source
   hash-type consistent
   timeout check 5s
