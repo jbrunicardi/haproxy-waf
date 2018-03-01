@@ -1,4 +1,4 @@
-FROM centos:latest
+FROM jbrunicardi/docker-centos-supervisor:latest
 
 # take a look at http://www.lua.org/download.html for
 # newer version
@@ -10,9 +10,9 @@ ENV HAPROXY_MAJOR=1.8 \
     LUA_URL=http://www.lua.org/ftp/lua-5.3.4.tar.gz \
     LUA_MD5=53a9c68bcc0eda58bdc2095ad5cdfc63 \
     MODSEC_URL=https://www.modsecurity.org/tarball/2.9.1/modsecurity-2.9.1.tar.gz \
-    MODSEC_SHA256=958cc5a7a7430f93fac0fd6f8b9aa92fc1801efce0cda797d6029d44080a9b24 \
-    MODSEC_CRS_URL=https://github.com/SpiderLabs/owasp-modsecurity-crs/archive/v3.0.0.tar.gz \
-    CRS_FILE=owasp-modsecurity-crs-v3.0.0.tar.gz
+    MODSEC_SHA256=958cc5a7a7430f93fac0fd6f8b9aa92fc1801efce0cda797d6029d44080a9b24 
+#    MODSEC_CRS_URL=https://github.com/SpiderLabs/owasp-modsecurity-crs/archive/v3.0.0.tar.gz \
+#    CRS_FILE=owasp-modsecurity-crs-v3.0.0.tar.gz
 
 # RUN cat /etc/redhat-release
 # RUN yum provides "*lib*/libc.a"
@@ -22,7 +22,7 @@ ENV HAPROXY_MAJOR=1.8 \
 # build image
 
 # to be able to add the patches in containerfiles dir
-COPY containerfiles /
+# COPY containerfiles /
 
 # cyrus-sasl must be added to not remove systemd 8-O strange.
 
@@ -31,12 +31,12 @@ RUN set -x \
   && yum -y install pcre openssl-libs zlib bind-utils curl iproute tar strace libevent libxml2 libcurl apr apr-util yajl cyrus-sasl ${buildDeps} \
   && curl -sSL ${LUA_URL} -o lua-${LUA_VERSION}.tar.gz \
   && curl -sSL ${MODSEC_URL} -o modsecurity-2.9.1.tar.gz \
-  && curl -sSL ${MODSEC_CRS_URL} -o ${CRS_FILE} \
+#  && curl -sSL ${MODSEC_CRS_URL} -o ${CRS_FILE} \
   && echo "${LUA_MD5} lua-${LUA_VERSION}.tar.gz" | md5sum -c \
   && echo "${MODSEC_SHA256} modsecurity-2.9.1.tar.gz" | sha256sum -c \
   && mkdir -p /usr/src/lua /data \
   && tar -xzf lua-${LUA_VERSION}.tar.gz -C /usr/src/lua --strip-components=1 \
-  && tar -xzf  ${CRS_FILE} -C /data \
+#  && tar -xzf  ${CRS_FILE} -C /data \
   && rm lua-${LUA_VERSION}.tar.gz \
   && make -C /usr/src/lua linux test install \
   && tar xfvz modsecurity-2.9.1.tar.gz \
@@ -82,16 +82,7 @@ RUN set -x \
 
 #         && openssl dhparam -out /usr/local/etc/haproxy/ssl/dh-param_4096 4096 \
 
-# I know it's not very efficient to copy this files twice but 
-# I accept this small inefficient
-COPY containerfiles /
+ADD container-files /
 
-RUN chmod 555 /container-entrypoint.sh
-
-EXPOSE 13443
-
-ENTRYPOINT ["/container-entrypoint.sh"]
-
-#CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.conf"]
-#CMD ["haproxy", "-vv"]
-#CMD ["/usr/local/bin/modsecurity","-f","/root/owasp-modsecurity-crs-3.0.0/crs-setup.conf.example"]
+ENV \
+  ENV_DEBUG=true
