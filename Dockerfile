@@ -75,6 +75,8 @@ RUN set -x \
   && mkdir -p /usr/local/etc/haproxy/ssl \
   && mkdir -p /usr/local/etc/haproxy/ssl/cas \
   && mkdir -p /usr/local/etc/haproxy/ssl/crts \
+  && mkdir -p /usr/local/etc/modsecurity \
+  && mkdir -p /usr/local/etc/modsecurity/owasp-modsecurity-crs \
   && cp -R /usr/src/haproxy/examples/errorfiles /usr/local/etc/haproxy/errors \
   && rm -rf /usr/src/haproxy /usr/src/lua /*tar.gz \
   && yum -y autoremove $buildDeps \
@@ -85,4 +87,4 @@ RUN set -x \
 ADD container-files /
 
 ENV \
-  ENV_DEBUG=true
+  ENV_DEBUG=-d
