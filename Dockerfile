@@ -84,6 +84,6 @@ RUN set -x \
 
 #         && openssl dhparam -out /usr/local/etc/haproxy/ssl/dh-param_4096 4096 \
 
-ENV ENV_DEBUG	-d
+ENV DEBUG	-d
 
 ADD container-files /
