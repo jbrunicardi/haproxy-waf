@@ -79,11 +79,18 @@ RUN set -x \
   && mkdir -p /usr/local/etc/modsecurity/owasp-modsecurity-crs \
   && cp -R /usr/src/haproxy/examples/errorfiles /usr/local/etc/haproxy/errors \
   && rm -rf /usr/src/haproxy /usr/src/lua /*tar.gz \
+  && yum install -y libmhash-devel && \
+  && yum install -y vixie-cron crontabs && \
+  && yum install -y logrotate && \  
+  && curl -LO https://download.elastic.co/beats/filebeat/filebeat-1.2.3-x86_64.rpm && \
+  && yum localinstall -y filebeat-1.2.3-x86_64.rpm && \
+  && rm -f filebeat-1.2.3-x86_64.rpm && \
   && yum -y autoremove $buildDeps \
   && yum -y clean all
 
 #         && openssl dhparam -out /usr/local/etc/haproxy/ssl/dh-param_4096 4096 \
 
 ENV DEBUG	-d
+ENV LOGSTASH_HOST   127.0.0.1:5044
 
 ADD container-files /

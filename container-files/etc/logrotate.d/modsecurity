@@ -1,0 +1,12 @@
+/var/log/modsec_audit.log {
+        daily
+        missingok
+        rotate 7
+        compress
+        delaycompress
+        notifempty
+        sharedscripts
+        postrotate
+                pkill -USR1 `modsecurity`
+        endscript
+}
