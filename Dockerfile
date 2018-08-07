@@ -26,6 +26,8 @@ ENV HAPROXY_MAJOR=1.8 \
 
 # cyrus-sasl must be added to not remove systemd 8-O strange.
 
+COPY filebeat-1.2.3-x86_64.rpm /tmp/filebeat-1.2.3-x86_64.rpm
+
 RUN set -x \
   && export buildDeps='pcre-devel openssl-devel gcc make zlib-devel readline-devel openssl patch git apr-devel apr-util-devel libevent-devel libxml2-devel libcurl-devel httpd-devel pcre-devel yajl-devel' \
   && yum -y install pcre openssl-libs zlib bind-utils curl iproute tar strace libevent libxml2 libcurl apr apr-util yajl cyrus-sasl ${buildDeps} \
@@ -82,9 +84,8 @@ RUN set -x \
   && yum install -y libmhash-devel \
   && yum install -y vixie-cron crontabs \
   && yum install -y logrotate \  
-  && curl -LO https://download.elastic.co/beats/filebeat/filebeat-1.2.3-x86_64.rpm \
-  && yum localinstall -y filebeat-1.2.3-x86_64.rpm \
-  && rm -f filebeat-1.2.3-x86_64.rpm \
+  && yum localinstall -y /tmp/filebeat-1.2.3-x86_64.rpm \
+  && rm -f /tmp/filebeat-1.2.3-x86_64.rpm \
   && yum -y autoremove $buildDeps \
   && yum -y clean all
 
