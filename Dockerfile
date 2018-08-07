@@ -30,7 +30,7 @@ COPY filebeat-1.2.3-x86_64.rpm /tmp/filebeat-1.2.3-x86_64.rpm
 
 RUN set -x \
   && export buildDeps='pcre-devel openssl-devel gcc make zlib-devel readline-devel openssl patch git apr-devel apr-util-devel libevent-devel libxml2-devel libcurl-devel httpd-devel pcre-devel yajl-devel' \
-  && yum -y install pcre openssl-libs zlib bind-utils curl iproute tar strace libevent libxml2 libcurl apr apr-util yajl cyrus-sasl ${buildDeps} \
+  && yum -y install pcre openssl-libs zlib bind-utils curl iproute tar strace libevent libxml2 libcurl apr apr-util yajl yajl-devel cyrus-sasl ${buildDeps} \
   && curl -sSL ${LUA_URL} -o lua-${LUA_VERSION}.tar.gz \
   && curl -sSL ${MODSEC_URL} -o modsecurity-2.9.1.tar.gz \
 #  && curl -sSL ${MODSEC_CRS_URL} -o ${CRS_FILE} \
@@ -50,6 +50,7 @@ RUN set -x \
       --enable-pcre-study \
       --without-lua \
       --enable-pcre-jit \
+	  --with-yajl="/usr/local/lib /usr/local" \
   && make -C standalone install \
   && mkdir -p $PWD/INSTALL/include \
   && cp standalone/*.h $PWD/INSTALL/include \
