@@ -9,8 +9,8 @@ ENV HAPROXY_MAJOR=1.8 \
     LUA_VERSION=5.3.4 \
     LUA_URL=http://www.lua.org/ftp/lua-5.3.4.tar.gz \
     LUA_MD5=53a9c68bcc0eda58bdc2095ad5cdfc63 \
-    MODSEC_URL=https://www.modsecurity.org/tarball/2.9.1/modsecurity-2.9.1.tar.gz \
-    MODSEC_SHA256=958cc5a7a7430f93fac0fd6f8b9aa92fc1801efce0cda797d6029d44080a9b24 
+    MODSEC_URL=https://www.modsecurity.org/tarball/2.9.2/modsecurity-2.9.2.tar.gz \
+    MODSEC_SHA256=41a8f73476ec891f3a9e8736b98b64ea5c2105f1ce15ea57a1f05b4bf2ffaeb5  
 #    MODSEC_CRS_URL=https://github.com/SpiderLabs/owasp-modsecurity-crs/archive/v3.0.0.tar.gz \
 #    CRS_FILE=owasp-modsecurity-crs-v3.0.0.tar.gz
 
@@ -32,17 +32,17 @@ RUN set -x \
   && export buildDeps='pcre-devel openssl-devel gcc make zlib-devel readline-devel openssl patch git apr-devel apr-util-devel libevent-devel libxml2-devel libcurl-devel httpd-devel pcre-devel yajl-devel' \
   && yum -y install pcre openssl-libs zlib bind-utils curl iproute tar strace libevent libxml2 libcurl apr apr-util yajl yajl-devel cyrus-sasl ${buildDeps} \
   && curl -sSL ${LUA_URL} -o lua-${LUA_VERSION}.tar.gz \
-  && curl -sSL ${MODSEC_URL} -o modsecurity-2.9.1.tar.gz \
+  && curl -sSL ${MODSEC_URL} -o modsecurity-2.9.2.tar.gz \
 #  && curl -sSL ${MODSEC_CRS_URL} -o ${CRS_FILE} \
   && echo "${LUA_MD5} lua-${LUA_VERSION}.tar.gz" | md5sum -c \
-  && echo "${MODSEC_SHA256} modsecurity-2.9.1.tar.gz" | sha256sum -c \
+  && echo "${MODSEC_SHA256} modsecurity-2.9.2.tar.gz" | sha256sum -c \
   && mkdir -p /usr/src/lua /data \
   && tar -xzf lua-${LUA_VERSION}.tar.gz -C /usr/src/lua --strip-components=1 \
 #  && tar -xzf  ${CRS_FILE} -C /data \
   && rm lua-${LUA_VERSION}.tar.gz \
   && make -C /usr/src/lua linux test install \
-  && tar xfvz modsecurity-2.9.1.tar.gz \
-  && cd modsecurity-2.9.1 \
+  && tar xfvz modsecurity-2.9.2.tar.gz \
+  && cd modsecurity-2.9.2 \
   && ./configure \
       --prefix=$PWD/INSTALL \
       --disable-apache2-module \
@@ -56,7 +56,7 @@ RUN set -x \
   && cp standalone/*.h $PWD/INSTALL/include \
   && cp apache2/*.h $PWD/INSTALL/include \
   && cd /usr/src \
-  && git clone http://git.haproxy.org/git/haproxy.git/ \
+  && git clone http://git.haproxy.org/git/haproxy-1.8.git/ \
   && make -C /usr/src/haproxy \
 	TARGET=linux2628 \
 	USE_PCRE=1 \
@@ -69,8 +69,8 @@ RUN set -x \
 	all \
 	install-bin \
   && cd /usr/src/haproxy/contrib/modsecurity \
-  && make MODSEC_INC=/modsecurity-2.9.1/INSTALL/include \
-      MODSEC_LIB=/modsecurity-2.9.1/INSTALL/lib \
+  && make MODSEC_INC=/modsecurity-2.9.2/INSTALL/include \
+      MODSEC_LIB=/modsecurity-2.9.2/INSTALL/lib \
       APACHE2_INC=/usr/include/httpd \
       APR_INC=/usr/include/apr-1 \
   && make install \
