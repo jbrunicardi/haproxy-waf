@@ -56,7 +56,8 @@ RUN set -x \
   && cp standalone/*.h $PWD/INSTALL/include \
   && cp apache2/*.h $PWD/INSTALL/include \
   && cd /usr/src \
-  && git clone http://git.haproxy.org/git/haproxy-1.8.git/ haproxy \
+#  && git clone http://git.haproxy.org/git/haproxy-1.8.git/ haproxy \
+  && git clone https://github.com/jbrunicardi/haproxy-1.8.git haproxy \
   && make -C /usr/src/haproxy \
 	TARGET=linux2628 \
 	USE_PCRE=1 \
