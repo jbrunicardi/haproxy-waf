@@ -94,6 +94,7 @@ RUN set -x \
 #         && openssl dhparam -out /usr/local/etc/haproxy/ssl/dh-param_4096 4096 \
 
 ENV DEBUG	-d
+ENV_MODSEC_NUM_WORKERS   10
 ENV LOGSTASH_HOST   127.0.0.1:5044
 
 ADD container-files /
