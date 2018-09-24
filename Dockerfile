@@ -100,7 +100,9 @@ RUN set -x \
   && yum localinstall -y /tmp/filebeat-1.2.3-x86_64.rpm \
   && rm -f /tmp/filebeat-1.2.3-x86_64.rpm \
   && yum -y autoremove $buildDeps \
-  && yum -y clean all
+  && yum -y clean all \
+  && echo '/opt/openssl-${OPENSSL_VERSION}/lib' >> /etc/ld.so.conf \
+  && ldconfig
 
 #         && openssl dhparam -out /usr/local/etc/haproxy/ssl/dh-param_4096 4096 \
 
