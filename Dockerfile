@@ -58,6 +58,7 @@ RUN set -x \
   && mkdir -p $PWD/INSTALL/include \
   && cp standalone/*.h $PWD/INSTALL/include \
   && cp apache2/*.h $PWD/INSTALL/include \
+  && cd /
   && tar -xzf openssl-${OPENSSL_VERSION}.tar.gz \
   && cd openssl-${OPENSSL_VERSION} \
   && ./config --prefix=/opt/openssl-${OPENSSL_VERSION} shared \
