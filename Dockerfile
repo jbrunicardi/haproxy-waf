@@ -58,11 +58,11 @@ RUN set -x \
   && mkdir -p $PWD/INSTALL/include \
   && cp standalone/*.h $PWD/INSTALL/include \
   && cp apache2/*.h $PWD/INSTALL/include \
-  $$ tar -xzf openssl-${OPENSSL_VERSION}.tar.gz \
-  $$ cd openssl-${OPENSSL_VERSION} \
-  $$ ./config --prefix=/opt/openssl-${OPENSSL_VERSION} shared \
+  && tar -xzf openssl-${OPENSSL_VERSION}.tar.gz \
+  && cd openssl-${OPENSSL_VERSION} \
+  && ./config --prefix=/opt/openssl-${OPENSSL_VERSION} shared \
   && make \
-  $$ make install \
+  && make install \
   && cd /usr/src \
 #  && git clone http://git.haproxy.org/git/haproxy-1.8.git/ haproxy \
   && git clone https://github.com/jbrunicardi/haproxy-1.8.git haproxy \
