@@ -10,7 +10,9 @@ ENV HAPROXY_MAJOR=1.8 \
     LUA_URL=http://www.lua.org/ftp/lua-5.3.4.tar.gz \
     LUA_MD5=53a9c68bcc0eda58bdc2095ad5cdfc63 \
     MODSEC_URL=https://www.modsecurity.org/tarball/2.9.2/modsecurity-2.9.2.tar.gz \
-    MODSEC_SHA256=41a8f73476ec891f3a9e8736b98b64ea5c2105f1ce15ea57a1f05b4bf2ffaeb5  
+    MODSEC_SHA256=41a8f73476ec891f3a9e8736b98b64ea5c2105f1ce15ea57a1f05b4bf2ffaeb5 \
+    OPENSSL_VERSION=1.1.1 \
+	OPENSSL_URL=https://www.openssl.org/source/openssl-1.1.1.tar.gz
 #    MODSEC_CRS_URL=https://github.com/SpiderLabs/owasp-modsecurity-crs/archive/v3.0.0.tar.gz \
 #    CRS_FILE=owasp-modsecurity-crs-v3.0.0.tar.gz
 
@@ -33,7 +35,8 @@ RUN set -x \
   && yum -y install pcre openssl-libs zlib bind-utils curl iproute tar strace libevent libxml2 libcurl apr apr-util yajl yajl-devel cyrus-sasl ${buildDeps} \
   && curl -sSL ${LUA_URL} -o lua-${LUA_VERSION}.tar.gz \
   && curl -sSL ${MODSEC_URL} -o modsecurity-2.9.2.tar.gz \
-#  && curl -sSL ${MODSEC_CRS_URL} -o ${CRS_FILE} \
+#  && curl -sSL ${MODSEC_CRS_URL} -o ${CRS_FILE} \  
+  && curl -sSL ${OPENSSL_URL} -o openssl-${OPENSSL_VERSION}.tar.gz \
   && echo "${LUA_MD5} lua-${LUA_VERSION}.tar.gz" | md5sum -c \
   && echo "${MODSEC_SHA256} modsecurity-2.9.2.tar.gz" | sha256sum -c \
   && mkdir -p /usr/src/lua /data \
@@ -55,6 +58,11 @@ RUN set -x \
   && mkdir -p $PWD/INSTALL/include \
   && cp standalone/*.h $PWD/INSTALL/include \
   && cp apache2/*.h $PWD/INSTALL/include \
+  $$ tar -xzf openssl-${OPENSSL_VERSION}.tar.gz \
+  $$ cd openssl-${OPENSSL_VERSION} \
+  $$ ./config --prefix=/opt/openssl-${OPENSSL_VERSION} shared \
+  && make \
+  $$ make install \
   && cd /usr/src \
 #  && git clone http://git.haproxy.org/git/haproxy-1.8.git/ haproxy \
   && git clone https://github.com/jbrunicardi/haproxy-1.8.git haproxy \
@@ -63,10 +71,12 @@ RUN set -x \
 	USE_PCRE=1 \
 	USE_OPENSSL=1 \
 	USE_ZLIB=1 \
-        USE_LINUX_SPLICE=1 \
-        USE_TFO=1 \
-        USE_PCRE_JIT=1 \
-        USE_LUA=1 \
+    USE_LINUX_SPLICE=1 \
+    USE_TFO=1 \
+    USE_PCRE_JIT=1 \
+    USE_LUA=1 \
+	SSL_LIB=/opt/openssl-${OPENSSL_VERSION}/lib \
+	SSL_INC=/opt/openssl-${OPENSSL_VERSION}/include \	
 	all \
 	install-bin \
   && cd /usr/src/haproxy/contrib/modsecurity \
